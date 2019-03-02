@@ -1,3 +1,4 @@
+# Pythagorean expectation
 library(tidyverse)
 
 Pyth_ratio <- read_csv("data/processed/Pyth_ratio.csv")
