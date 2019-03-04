@@ -43,10 +43,10 @@ dtrain <- xgb.DMatrix(as.matrix(tr_df),
 dtest <- xgb.DMatrix(as.matrix(te_df),
                      label = te$target)
 
-param <- list(max_depth = 3, eta = .05, silent = 1, nthread = 2, 
+param <- list(max_depth = 3, eta = .01, silent = 1, nthread = 2, 
               objective = "binary:logistic", eval_metric = "logloss")
-cv <- xgb.cv(params = param, dtrain, nrounds = 100, nfold = 10,
-             early_stopping_rounds = 10)
+cv <- xgb.cv(params = param, dtrain, nrounds = 1000, nfold = 10,
+             early_stopping_rounds = 2)
 
 bst <- xgb.train(params = param, dtrain, nrounds = cv$best_iteration)
 submit <- tibble(ID = te$ID,

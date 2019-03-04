@@ -12,7 +12,9 @@ Pyth_ratio_fe <- target %>%
   left_join(Pyth_ratio, by = c("Season", "team1" = "TeamID")) %>% 
   left_join(Pyth_ratio, by = c("Season", "team2" = "TeamID")) %>% 
   select(-Season, -team1, -team2) %>% 
-  mutate(Pyth_ratio_rate = Pyth_ratio.x / Pyth_ratio.y)
+  transmute(ID,
+            Pyth_ratio_rate = Pyth_ratio.x / Pyth_ratio.y,
+            Pyth_ratio_diff = Pyth_ratio.x - Pyth_ratio.y)
 
 Pyth_ratio_fe %>% 
   write_csv("data/features/Pyth_ratio_fe.csv")
