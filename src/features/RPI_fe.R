@@ -12,9 +12,9 @@ RPI_fe <- target %>%
   left_join(RPI, by = c("Season", "team2" = "TeamID")) %>% 
   select(-Season, -team1, -team2) %>% 
   transmute(ID, 
-            WP_diff = WP.x - WP.y,
-            OWP_diff = OWP.x - OWP.y,
-            OOWP_diff = OOWP.x - OOWP.y,
+            # WP_diff = WP.x - WP.y,
+            # OWP_diff = OWP.x - OWP.y,
+            # OOWP_diff = OOWP.x - OOWP.y,
             RPI_diff = RPI.x - RPI.y)
 
 

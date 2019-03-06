@@ -1,13 +1,13 @@
 # RPI feature from regular season
 
 library(tidyverse)
-reg_stats <- read.csv("data/datafiles/RegularSeasonDetailedResults.csv",
+reg_stats_compact <- read.csv("data/datafiles/RegularSeasonCompactResults.csv",
                       stringsAsFactors = FALSE) %>% 
   as_tibble()
 
 
 # winning percentage
-WP <- reg_stats %>% 
+WP <- reg_stats_compact %>% 
   select(Season, WTeamID, LTeamID) %>% 
   gather(win_flg, TeamID, -Season) %>% 
   mutate(win_flg = if_else(win_flg == "WTeamID", 1, 0)) %>% 
@@ -17,10 +17,10 @@ WP <- reg_stats %>%
 
 # opponents' winning percentage
 OWP_tmp <- bind_rows(
-  reg_stats %>% 
+  reg_stats_compact %>% 
     select(Season, TeamID = WTeamID, OTeamID = LTeamID) %>% 
     mutate(win_flg = 1),
-  reg_stats %>% 
+  reg_stats_compact %>% 
     select(Season, TeamID = LTeamID, OTeamID = WTeamID) %>% 
     mutate(win_flg = 0)
   ) %>% 

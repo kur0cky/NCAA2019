@@ -13,8 +13,8 @@ seed_fe <- target %>%
   left_join(seed_tmp, by = c("Season", "team1" = "TeamID")) %>% 
   left_join(seed_tmp, by = c("Season", "team2" = "TeamID")) %>% 
   select(-team1, -team2, -Season) %>% 
-  mutate(seed_diff = seed.x - seed.y,
-         seed_ratio = seed.x / seed.y)
+  transmute(ID,
+            seed_diff = seed.x - seed.y)
 
 seed_fe %>% 
   write_csv("data/features/seed_fe.csv")
