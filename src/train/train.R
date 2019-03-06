@@ -77,21 +77,27 @@ library(ranger)
 
 fit_rf <- ranger(target ~ . - ID,
                  data = tr,
-                 # mtry = ,
-                 num.trees = 2000,
                  importance = "permutation")
 fit_rf$variable.importance %>% 
   sort()
+fit_ext <- ranger(target ~ . - ID,
+                  data = tr,
+                  num.trees = 2000,
+                  importance = "permutation",
+                  splitrule = "extratrees")
 
 submit <- submit %>% 
   mutate(pred_xgb = predict(bst, dtest),
          pred_glm = predict(fit_glm, newdata = te_df, type = "response"),
          pred_lasso = predict(fit_lasso, as.matrix(te_df), type = "response"),
          pred_ridge = predict(fit_ridge, as.matrix(te_df), type = "response"),
-         pred_rf = predict(fit_rf, te_df)$predictions) %>% 
+         pred_rf = predict(fit_rf, te_df)$predictions,
+         pred_ext = predict(fit_ext, te_df)$predictions) %>% 
   mutate(pred_rf = if_else(pred_rf < .025, .025, pred_rf),
-         pred_rf = if_else(pred_rf > .975, .975, pred_rf)) %>% 
-  mutate(Pred = (pred_xgb + pred_glm + pred_lasso + pred_rf + pred_ridge ) / 5)
+         pred_rf = if_else(pred_rf > .975, .975, pred_rf),
+         pred_ext = if_else(pred_ext < .025, .025, pred_ext),
+         pred_ext = if_else(pred_ext > .975, .975, pred_ext)) %>% 
+  mutate(Pred = (pred_xgb + pred_glm + pred_lasso + pred_rf + pred_ridge + pred_ext ) / 6)
 
 validate(submit)
 validate_y(submit)

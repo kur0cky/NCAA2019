@@ -13,6 +13,7 @@ massey_fe <- read.csv("data/features/massey_fe.csv", stringsAsFactors = FALSE)
 massey_conf_fe <- read.csv("data/features/massey_conf_fe.csv", stringsAsFactors = FALSE)
 colley_fe <- read.csv("data/features/colley_fe.csv", stringsAsFactors = FALSE)
 elo_fe <- read.csv("data/features/elo_fe.csv", stringsAsFactors = FALSE)
+elo_score_fe <- read.csv("data/features/elo_score_fe.csv", stringsAsFactors = FALSE)
 target <- read_csv("data/processed/target.csv")
 
 
@@ -23,6 +24,7 @@ target %>%
   left_join(massey_conf_fe, by = "ID") %>% 
   left_join(colley_fe, by = "ID") %>%  
   left_join(elo_fe, by = "ID") %>% 
+  left_join(elo_score_fe, by = "ID") %>% 
   # inner_join(reg_season_fe, by = "ID") %>%
   # inner_join(ex_tourney_games_fe, by = "ID") %>%
   inner_join(Pyth_ratio_fe, by = "ID") %>% 
