@@ -78,8 +78,6 @@ library(ranger)
 fit_rf <- ranger(target ~ . - ID,
                  data = tr,
                  importance = "permutation")
-fit_rf$variable.importance %>% 
-  sort()
 fit_ext <- ranger(target ~ . - ID,
                   data = tr,
                   num.trees = 2000,
@@ -97,7 +95,7 @@ submit <- submit %>%
          pred_rf = if_else(pred_rf > .975, .975, pred_rf),
          pred_ext = if_else(pred_ext < .025, .025, pred_ext),
          pred_ext = if_else(pred_ext > .975, .975, pred_ext)) %>% 
-  mutate(Pred = (pred_xgb + pred_glm + pred_lasso + pred_rf + pred_ridge + pred_ext ) / 6)
+  mutate(Pred = (pred_xgb + pred_glm + pred_lasso + pred_ridge + pred_ext ) / 5)
 
 validate(submit)
 validate_y(submit)

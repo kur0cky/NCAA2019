@@ -15,7 +15,7 @@ tmp <- reg_stats_compact %>%
   group_by(Season) %>% 
   nest() %>% 
   mutate(elo = map(data, ~ 
-                     elo.run(win_flg ~ WTeamID + LTeamID + k(32*log(abs(Score) + 1)), data = .x) %>% 
+                     elo.run(win_flg ~ WTeamID + LTeamID + k(32*log(abs(Score/6) + 1)), data = .x) %>% 
                      as.matrix() %>% 
                      as_tibble() %>% 
                      tail(1)))
@@ -27,7 +27,7 @@ tmp2 <- reg_stats_compact %>%
   mutate(win_flg = TRUE,
          WTeamID = as.character(WTeamID),
          LTeamID = as.character(LTeamID)) %>% 
-  elo.run(win_flg ~ WTeamID + LTeamID + k(10*log(abs(Score) + 1)), data = .) %>% 
+  elo.run(win_flg ~ WTeamID + LTeamID + k(10*log(abs(Score/6) + 1)), data = .) %>% 
   as.matrix() %>% 
   as_tibble() %>% 
   bind_cols(reg_stats_compact %>% select(Season)) %>% 

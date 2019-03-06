@@ -19,16 +19,16 @@ target <- read_csv("data/processed/target.csv")
 
 target %>% 
   inner_join(seed_fe, by = "ID") %>%
-  # inner_join(ranking_fe, by = "ID") %>%
-  left_join(massey_fe, by = "ID") %>% 
-  left_join(massey_conf_fe, by = "ID") %>% 
-  left_join(colley_fe, by = "ID") %>%  
-  left_join(elo_fe, by = "ID") %>% 
-  left_join(elo_score_fe, by = "ID") %>% 
-  # inner_join(reg_season_fe, by = "ID") %>%
-  # inner_join(ex_tourney_games_fe, by = "ID") %>%
-  inner_join(Pyth_ratio_fe, by = "ID") %>% 
-  inner_join(RPI_fe, by = "ID") %>% 
+  inner_join(ranking_fe, by = "ID") %>%
+  left_join(massey_fe, by = "ID") %>%
+  left_join(massey_conf_fe, by = "ID") %>%
+  left_join(colley_fe, by = "ID") %>%
+  left_join(elo_fe, by = "ID") %>%
+  left_join(elo_score_fe, by = "ID") %>%
+  inner_join(reg_season_fe, by = "ID") %>%
+  inner_join(ex_tourney_games_fe, by = "ID") %>%
+  inner_join(Pyth_ratio_fe, by = "ID") %>%
+  inner_join(RPI_fe, by = "ID") %>%
   write_csv("data/train/features.csv")
 
   
