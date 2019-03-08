@@ -21,7 +21,7 @@ target <- read_csv("data/processed/target.csv")
 sample <- read_csv("data/SampleSubmissionStage1.csv")
 
 target %>% 
-  bind_rows(sample) %>% 
+  bind_rows(anti_join(sample, target, by = "ID")) %>% 
   select(-Pred) %>% 
   left_join(keener_scorerate_fe, by = "ID") %>%
   # left_join(keener_scorediff_fe, by = "ID") %>%
