@@ -1,6 +1,6 @@
 library(tidyverse)
 
-tmp <- read_csv("data/processed/colley.csv")
+tmp <- read_csv("data/processed/keener_scorerate.csv")
 target <- read_csv("data/processed/target.csv")
 sample <- read_csv("data/SampleSubmissionStage1.csv")
 
@@ -14,7 +14,7 @@ fe <- target %>%
   left_join(tmp, by = c("Season", "team2" = "TeamID")) %>% 
   select(-Season, -team1, -team2) %>% 
   transmute(ID,
-            colley_r_diff = colley_r.x - colley_r.y)
+            keener_scorerate_diff = rate.x - rate.y)
 
-write_csv(fe, "data/features/colley_fe.csv")
+write_csv(fe, "data/features/keener_scorerate_fe.csv")
 rm(tmp, fe);gc()

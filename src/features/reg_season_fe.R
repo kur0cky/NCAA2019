@@ -4,6 +4,7 @@ reg_stats <- read_csv("data/DataFiles/RegularSeasonDetailedResults.csv")
 reg_stats_compact <- read_csv("data/DataFiles/RegularSeasonCompactResults.csv")
 target <- read_csv("data/processed/target.csv")
 
+
 tmp <- reg_stats_compact %>% 
   mutate(ScoreRate = WScore / (WScore+LScore)) %>% 
   select(Season, WTeamID, LTeamID, ScoreRate) %>% 
@@ -38,8 +39,11 @@ tmp3 <- reg_stats %>%
   ungroup()
 
 
-reg_season_fe <- target %>% 
-  select(-target) %>% 
+sample <- read_csv("data/SampleSubmissionStage1.csv")
+
+fe <- target %>% 
+  bind_rows(sample) %>% 
+  distinct(ID) %>% 
   mutate(Season = as.integer(str_sub(ID, 1, 4)),
          team1 = as.integer(str_sub(ID, 6, 9)),
          team2 = as.integer(str_sub(ID, 11, 14))) %>% 
@@ -55,6 +59,6 @@ reg_season_fe <- target %>%
             avg_PPP_diff = avg_PPP.x - avg_PPP.y,
             avg_eFG_diff = avg_eFG.x - avg_eFG.y)
 
-reg_season_fe %>% 
+fe %>% 
   write_csv("data/features/reg_season_fe.csv")
-rm(tmp, reg_season_fe); gc()
+rm(tmp, tmp2, tmp3, fe); gc()

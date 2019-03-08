@@ -3,7 +3,6 @@ library(tidyverse)
 massey <- read_csv("data/MasseyOrdinals.csv")
 target <- read_csv("data/processed/target.csv")
 
-
 ranking <- massey %>% 
   filter(RankingDayNum == 128,
          SystemName %in% c("POM", "MOR", "MAS", 
@@ -12,8 +11,14 @@ ranking <- massey %>%
   select(-RankingDayNum) %>% 
   spread(SystemName, OrdinalRank)
 
-ranking_fe <- target %>% 
-  select(-target) %>% 
+
+
+
+sample <- read_csv("data/SampleSubmissionStage1.csv")
+
+fe <- target %>% 
+  bind_rows(sample) %>% 
+  distinct(ID) %>% 
   mutate(Season = as.integer(str_sub(ID, 1, 4)),
          team1 = as.integer(str_sub(ID, 6, 9)),
          team2 = as.integer(str_sub(ID, 11, 14))) %>% 
@@ -26,6 +31,6 @@ ranking_fe <- target %>%
             POM_diff = POM.x - POM.y,
             MOR_diff = MOR.x - MOR.y)
 
-ranking_fe %>% 
+fe %>% 
   write_csv("data/features/ranking_fe.csv")
-rm(ranking_fe, ranking);gc()
+rm(fe, ranking);gc()

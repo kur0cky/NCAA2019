@@ -2,9 +2,11 @@ library(tidyverse)
 
 tmp <- read_csv("data/processed/massey.csv")
 target <- read_csv("data/processed/target.csv")
+sample <- read_csv("data/SampleSubmissionStage1.csv")
 
 fe <- target %>% 
-  select(-target) %>% 
+  bind_rows(sample) %>% 
+  distinct(ID) %>% 
   mutate(Season = as.integer(str_sub(ID, 1, 4)),
          team1 = as.integer(str_sub(ID, 6, 9)),
          team2 = as.integer(str_sub(ID, 11, 14))) %>% 

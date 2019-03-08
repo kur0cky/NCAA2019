@@ -2,9 +2,11 @@ library(tidyverse)
 
 RPI <- read_csv("data/processed/RPI.csv")
 target <- read_csv("data/processed/target.csv")
+sample <- read_csv("data/SampleSubmissionStage1.csv")
 
-RPI_fe <- target %>% 
-  select(-target) %>% 
+fe <- target %>% 
+  bind_rows(sample) %>% 
+  distinct(ID) %>% 
   mutate(Season = as.integer(str_sub(ID, 1, 4)),
          team1 = as.integer(str_sub(ID, 6, 9)),
          team2 = as.integer(str_sub(ID, 11, 14))) %>% 
@@ -18,6 +20,6 @@ RPI_fe <- target %>%
             RPI_diff = RPI.x - RPI.y)
 
 
-RPI_fe %>% 
+fe %>% 
   write_csv("data/features/RPI_fe.csv")
-rm(RPI, RPI_fe);gc
+rm(RPI, fe);gc()

@@ -14,7 +14,7 @@ source("src/function/validate.R")
 tr <- features %>% 
   filter(as.integer(str_sub(ID, 1, 4)) < 2014)
 te <- features %>% 
-  filter(as.integer(str_sub(ID, 1, 4)) >= 2014) %>% 
+  semi_join(sample, by = "ID") %>% 
   arrange(ID)
 
 tr_df <- tr %>% 
@@ -44,10 +44,11 @@ dtrain <- xgb.DMatrix(as.matrix(tr_df),
 dtest <- xgb.DMatrix(as.matrix(te_df),
                      label = te$target)
 
+set.seed(1)
 param <- list(max_depth = 3, eta = .01, silent = 1, nthread = 2, 
               lambda = .1,
               objective = "binary:logistic", eval_metric = "logloss")
-cv <- xgb.cv(params = param, dtrain, nrounds = 1000, nfold = 10,
+cv <- xgb.cv(params = param, dtrain, nrounds = 1000, nfold = 20,
              early_stopping_rounds = 2)
 
 bst <- xgb.train(params = param, dtrain, nrounds = cv$best_iteration)
@@ -77,6 +78,7 @@ library(ranger)
 
 fit_rf <- ranger(target ~ . - ID,
                  data = tr,
+                 num.trees = 2000,
                  importance = "permutation")
 fit_ext <- ranger(target ~ . - ID,
                   data = tr,
@@ -99,3 +101,10 @@ submit <- submit %>%
 
 validate(submit)
 validate_y(submit)
+  
+
+sub <- submit %>% 
+  select(ID, Pred) %>% 
+  arrange(ID)
+sub %>% 
+  write_csv("data/submit/first.csv")

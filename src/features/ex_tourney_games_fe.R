@@ -3,9 +3,7 @@
 tourney_stats_compact <- read.csv("data/DataFiles/NCAATourneyCompactResults.csv", 
                                   stringsAsFactors = FALSE) %>% 
   as_tibble()
-target <- read.csv("data/processed/target.csv",
-                   stringsAsFactors = FALSE) %>% 
-  as_tibble()
+target <- read_csv("data/processed/target.csv")
 
 tmp <- tourney_stats_compact %>% 
   select(Season, WTeamID, LTeamID) %>% 
@@ -17,8 +15,12 @@ tmp <- tourney_stats_compact %>%
   mutate(Season = Season + 1) %>% 
   rename(ex_games = n)
 
+
+sample <- read_csv("data/SampleSubmissionStage1.csv")
+
 fe <- target %>% 
-  select(-target) %>% 
+  bind_rows(sample) %>% 
+  distinct(ID) %>% 
   mutate(Season = as.integer(str_sub(ID, 1, 4)),
          team1 = as.integer(str_sub(ID, 6, 9)),
          team2 = as.integer(str_sub(ID, 11, 14))) %>% 
