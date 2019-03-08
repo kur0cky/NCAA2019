@@ -17,13 +17,15 @@ elo_score_fe <- read.csv("data/features/elo_score_fe.csv", stringsAsFactors = FA
 keener_scorerate_fe <- read.csv("data/features/keener_scorerate_fe.csv", stringsAsFactors = FALSE)
 keener_scorediff_fe <- read.csv("data/features/keener_scorediff_fe.csv", stringsAsFactors = FALSE)
 markov_win_diff <- read.csv("data/features/markov_win_diff.csv", stringsAsFactors = FALSE)
+od_fe <- read.csv("data/features/od_fe.csv", stringsAsFactors = FALSE)
 target <- read_csv("data/processed/target.csv")
 sample <- read_csv("data/SampleSubmissionStage1.csv")
 
 target %>% 
   bind_rows(anti_join(sample, target, by = "ID")) %>% 
   select(-Pred) %>% 
-  left_join(keener_scorerate_fe, by = "ID") %>%
+  # left_join(keener_scorerate_fe, by = "ID") %>%
+  left_join(od_fe, by = "ID") %>%
   # left_join(keener_scorediff_fe, by = "ID") %>%
   # left_join(markov_win_diff, by = "ID") %>% 
   # left_join(seed_fe, by = "ID") %>%
