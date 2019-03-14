@@ -1,6 +1,6 @@
 library(tidyverse)
 
-tmp <- read_csv("data/processed/massey.csv")
+tmp <- read_csv("data/processed/coef_nmf.csv")
 target <- read_csv("data/processed/target.csv")
 sample <- read_csv("data/SampleSubmissionStage1.csv")
 
@@ -12,14 +12,10 @@ fe <- target %>%
          team2 = as.integer(str_sub(ID, 11, 14))) %>% 
   left_join(tmp, by = c("Season", "team1" = "TeamID")) %>% 
   left_join(tmp, by = c("Season", "team2" = "TeamID")) %>% 
+  replace_na(list(rate_nmf.x = 0, rate_nmf.y = 0)) %>% 
   select(-Season, -team1, -team2) %>% 
   transmute(ID,
-            massey_r_diff = massey_r.x - massey_r.y,
-            massey_r.x,
-            massey_r.y
-            # massey_o_diff = massey_o.x - massey_o.y,
-            # massey_d_diff = massey_d.x - massey_d.y,
-            )
+            coef_nmf_diff = coef.x - coef.y) 
 
-write_csv(fe, "data/features/massey_fe.csv")
+write_csv(fe, "data/features/coef_nmf_fe.csv")
 rm(tmp, fe);gc()

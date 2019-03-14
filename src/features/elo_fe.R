@@ -15,6 +15,7 @@ fe <- target %>%
   select(-Season, -team1, -team2) %>% 
   transmute(ID,
             elo_r_diff = elo_r.x - elo_r.y,
+            elo_3r_diff = elo_3r.x - elo_3r.y,
             elo_all_diff = elo_all.x - elo_all.y)
 
 write_csv(fe, "data/features/elo_fe.csv")

@@ -18,26 +18,32 @@ keener_scorerate_fe <- read.csv("data/features/keener_scorerate_fe.csv", strings
 keener_scorediff_fe <- read.csv("data/features/keener_scorediff_fe.csv", stringsAsFactors = FALSE)
 markov_win_diff <- read.csv("data/features/markov_win_diff.csv", stringsAsFactors = FALSE)
 od_fe <- read.csv("data/features/od_fe.csv", stringsAsFactors = FALSE)
+coef_nmf_fe <- read.csv("data/features/coef_nmf_fe.csv", stringsAsFactors = FALSE)
+basis_nmf_fe <- read.csv("data/features/basis_nmf_fe.csv", stringsAsFactors = FALSE)
+nmf_fe <- read.csv("data/features/nmf_fe.csv", stringsAsFactors = FALSE)
 target <- read_csv("data/processed/target.csv")
 sample <- read_csv("data/SampleSubmissionStage1.csv")
 
 target %>% 
   bind_rows(anti_join(sample, target, by = "ID")) %>% 
   select(-Pred) %>% 
-  # left_join(keener_scorerate_fe, by = "ID") %>%
-  left_join(od_fe, by = "ID") %>%
-  # left_join(keener_scorediff_fe, by = "ID") %>%
-  # left_join(markov_win_diff, by = "ID") %>% 
-  # left_join(seed_fe, by = "ID") %>%
-  # left_join(ranking_fe, by = "ID") %>%
-  left_join(massey_fe, by = "ID") %>%
   # left_join(massey_conf_fe, by = "ID") %>%
-  # left_join(colley_fe, by = "ID") %>%
+  left_join(keener_scorerate_fe, by = "ID") %>%
+  left_join(keener_scorediff_fe, by = "ID") %>%
+  left_join(nmf_fe, by = "ID") %>%
+  left_join(basis_nmf_fe, by = "ID") %>%
+  left_join(coef_nmf_fe, by = "ID") %>%
+  left_join(od_fe, by = "ID") %>%
+  left_join(markov_win_diff, by = "ID") %>%
+  left_join(seed_fe, by = "ID") %>%
+  left_join(massey_fe, by = "ID") %>%
+  left_join(colley_fe, by = "ID") %>%
   left_join(elo_fe, by = "ID") %>%
-  # left_join(elo_score_fe, by = "ID") %>%
+  left_join(elo_score_fe, by = "ID") %>%
+  left_join(ex_tourney_games_fe, by = "ID") %>%
+  left_join(Pyth_ratio_fe, by = "ID") %>%
   # left_join(reg_season_fe, by = "ID") %>%
-  # left_join(ex_tourney_games_fe, by = "ID") %>%
-  # left_join(Pyth_ratio_fe, by = "ID") %>%
+  # left_join(ranking_fe, by = "ID") %>%
   # left_join(RPI_fe, by = "ID") %>%
   write_csv("data/train/features.csv")
 
