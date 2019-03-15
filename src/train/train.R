@@ -188,8 +188,7 @@ submit <- submit %>%
          pred_ext = if_else(pred_ext > .975, .975, pred_ext)) %>% 
   mutate(Pred = (pred_glm + pred_lasso + pred_ridge + pred_ext + pred_xgb + pred_rf ) / 6)
 
-validate(submit)
-validate_y(submit)
+
 
 submit1 <- submit %>% 
   mutate(Season = as.integer(str_sub(ID, 1, 4)),
@@ -213,7 +212,10 @@ submit1$Pred[submit1$Seed1 == 1 & submit1$Seed2 == 16] = 0.999
 submit1 <- submit1 %>% 
   select(-Seed1, -Seed2, -Season, -team1, -team2)
 validate(submit1)
+validate(submit)
+
 validate_y(submit1)
+validate_y(submit)
 sub <- submit %>% 
   select(ID, Pred) %>% 
   arrange(ID)
