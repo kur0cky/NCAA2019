@@ -1,5 +1,19 @@
 library(tidyverse)
+tourney_compact <- read_csv("data/DataFiles/NCAATourneyCompactResults.csv") %>% 
+  mutate(team1 = if_else(WTeamID < LTeamID, WTeamID, LTeamID),
+         team2 = if_else(WTeamID > LTeamID, WTeamID, LTeamID)) %>% 
+  transmute(Season, 
+            ID = str_c(Season, team1, team2, sep = "_"),
+            DayNum) 
 target <- read_csv("data/processed/target.csv")
+target <- target %>%
+  inner_join(tourney_compact, by = "ID") %>%
+  arrange(Season, DayNum, ID) %>%
+  group_by(Season) %>%
+  dplyr::slice(-c(1:4)) %>%
+  ungroup() %>%
+  filter(Season >= 2014) %>% 
+  select(ID, target)
 
 validate <- function(df){
   df %>% 
@@ -18,3 +32,5 @@ validate_y <- function(df){
     ungroup() %>% 
     spread(model, score)
 }
+
+rm(tourney_compact); gc()
