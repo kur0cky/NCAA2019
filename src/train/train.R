@@ -7,7 +7,18 @@ library(glmnet)
 library(ranger)
 
 tmp <- read_csv("data/tmp.csv")
-features <- read.csv("data/train/features.csv", stringsAsFactors = FALSE)
+features <- read.csv("data/train/features.csv", stringsAsFactors = FALSE) %>% 
+  group_by(ID) %>% 
+  mutate(rating_sum = sum((massey_r_diff > 0) + 
+                            (od_diff > 0)+
+                            (elo_all_diff > 0)+
+                            (elo_r_diff > 0)+
+                            (RPI_diff > 0)+
+                            (colley_r_diff > 0)+
+                            (markov_win_diff > 0)+
+                            (nmf > 0)+
+                            (keener_scorediff_diff > 0))) %>% 
+  ungroup()
 sample <- read.csv("data/SampleSubmissionStage1.csv", 
                    stringsAsFactors = FALSE) %>% 
   as_tibble()
@@ -15,7 +26,9 @@ seeds <- read_csv("data/processed/seed.csv")
 source("src/function/validate.R")
 
 tr <- features %>% 
-  filter(as.integer(str_sub(ID, 1, 4)) < 2014) 
+  filter(as.integer(str_sub(ID, 1, 4)) < 2014,
+         # as.integer(str_sub(ID, 1, 4)) > 2002
+         ) 
 te <- features %>% 
   semi_join(sample, by = "ID") %>% 
   arrange(ID)
@@ -95,22 +108,22 @@ linear <- xgb.train(params = paraml, dtrain, nrounds = cv_l$best_iteration)
 
 # dart----
 
-paramd <- list(max_depth = 1,
-               min_child_weight = 2,
-               eta = .02,
-               silent = 10, 
-               booster = "dart",
-               objective = "binary:logistic",
-               eval_metric = "logloss",
-               nthread = 1)
-
-set.seed(1)
-cv_d <- xgb.cv(params = paramd, dtrain, nrounds = 10000, nfold = 20,
-               early_stopping_rounds = 10,
-               prediction = TRUE)
-
-set.seed(1)
-dart <- xgb.train(params = paramd, dtrain, nrounds = cv_d$best_iteration)
+# paramd <- list(max_depth = 1,
+#                min_child_weight = 2,
+#                eta = .02,
+#                silent = 10, 
+#                booster = "dart",
+#                objective = "binary:logistic",
+#                eval_metric = "logloss",
+#                nthread = 1)
+# 
+# set.seed(1)
+# cv_d <- xgb.cv(params = paramd, dtrain, nrounds = 10000, nfold = 20,
+#                early_stopping_rounds = 10,
+#                prediction = TRUE)
+# 
+# set.seed(1)
+# dart <- xgb.train(params = paramd, dtrain, nrounds = cv_d$best_iteration)
 
 
 # impo----
@@ -181,10 +194,12 @@ submit <- submit %>%
          pred_ext = if_else(pred_ext > .975, .975, pred_ext),
          Pred_l = predict(linear, dtest),
          Pred_b = predict(bst, dtest),
-         Pred_d = predict(dart, dtest)) %>% 
+         # Pred_d = predict(dart, dtest)
+         ) %>% 
   mutate(Pred = (pred_lasso + pred_ridge + pred_glm +
                    pred_ext + pred_rf + 
-                   Pred_l + Pred_b + Pred_d) / 8)
+                   Pred_l #+ Pred_b
+                 ) / 6)
 
 
 
