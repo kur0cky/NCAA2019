@@ -182,8 +182,9 @@ submit <- submit %>%
          Pred_l = predict(linear, dtest),
          Pred_b = predict(bst, dtest),
          Pred_d = predict(dart, dtest)) %>% 
-  mutate(Pred = (pred_lasso + pred_ridge + pred_ext + pred_rf +
-                   Pred_l ) / 5)
+  mutate(Pred = (pred_lasso + pred_ridge + pred_glm +
+                   pred_ext + pred_rf + 
+                   Pred_l + Pred_b + Pred_d) / 8)
 
 
 
