@@ -346,3 +346,19 @@ R1SubmissionRF <- test %>%
 
 R1SubmissionRF <- unite(R1SubmissionRF, "ID", Season, Team1, Team2, sep = "_")
 write.csv(R1SubmissionRF, "R1SubmissionRF.csv", row.names = FALSE)
+
+
+
+# for kuroki
+
+train %>% 
+  mutate(ID = str_c(Season, "_", Team1, "_", Team2)) %>% 
+  select(ID, 
+         # target = result, 
+         seed_diff, team1_seed_str, team2_seed_str, Team1APD,
+         Team2APD, Team1AvgPoss, Team1AvgPossAllow, Team1WinPerc, Team1PPP,
+         Team1PPPAllow, Team1APD, Team2AvgPoss,
+         Team2AvgPossAllow, Team2WinPerc, Team2PPP, 
+         Team2PPPAllow, Team2APD) %>% 
+  write_csv("data/tmp.csv")
+  

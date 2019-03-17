@@ -11,7 +11,10 @@ validate <- function(df){
 
 validate_y <- function(df){
   df %>% 
+    gather(model, Pred,-ID) %>% 
     inner_join(target, by = "ID") %>% 
-    group_by(str_sub(ID, 1, 4)) %>% 
-    summarise(score = -mean(target * log(Pred) + (1-target) * log(1-Pred)))
+    group_by(Season = str_sub(ID, 1, 4), model) %>% 
+    summarise(score = -mean(target * log(Pred) + (1-target) * log(1-Pred))) %>% 
+    ungroup() %>% 
+    spread(model, score)
 }
