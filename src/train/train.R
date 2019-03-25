@@ -227,3 +227,5 @@ attStats(res_boruta) %>%
   arrange(desc(meanImp))
 plotImpHistory(res_boruta)
 
+x <- 0.466
+(x * 63 + (0 * log(0.4) + 1*log(0.6)))/63
